@@ -1,0 +1,13 @@
+HELP MENU
+Options for this program:
+
+  help          Opens help menu with listed options by writting 'node index.js help'.
+
+  list          Displays to-do list of to-do by writting 'node index.js list'.
+
+  add           Add a to-do task by writting 'node index.js add "taskName"'.
+
+  remove        Remove a to-do task by writting 'node index.js remove taskNumber'.
+
+  reset         Reset the to-do list by writting 'node index reset'.
+
