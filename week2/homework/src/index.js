@@ -28,7 +28,7 @@ switch (process.argv[2]) {
     if (Number.isInteger(nr) && nr > 0) {
       remove.remove(process.argv[3]);
     } else {
-      console.log("Number be integer and > 0");
+      console.log("Number must be integer and > 0");
     }
     break;
   case "reset":
