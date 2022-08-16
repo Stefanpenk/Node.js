@@ -1,10 +1,11 @@
 'use strict';
 
 const fs = require('fs');
-const uuid = require('uuid/v4');
+const {
+  v4: uuid
+} = require('uuid');
 
 const DEFAULT_ENCODING = 'utf8';
-
 
 class Todo {
   constructor(filename) {
@@ -39,6 +40,48 @@ class Todo {
     });
   }
 
+  async clear() {
+    const todos = [];
+
+    await this._save(todos);
+
+    return 'Tasks deleted';
+  }
+
+  async readOne(id) {
+    const todos = await this.read();
+
+    const todo = todos.find(t => t.id === id);
+    if (todo == null) {
+      const error = new Error(`To-do with ID ${id} does not exist`);
+      error.code = 'not-found';
+      throw error;
+    } else {
+      return todo;
+    }
+  }
+
+  async patch(id, done, description) {
+    const todos = await this.read();
+
+    const todo = todos.find(t => t.id === id);
+    if (todo == null) {
+      const error = new Error(`To-do with ID ${id} does not exist`);
+      error.code = 'not-found';
+      throw error;
+    }
+
+    if (done !== null) {
+      todo.done = done;
+    }
+
+    todo.description = description;
+
+    await this._save(todos);
+
+    return todo;
+  }
+
   async update(id, description) {
     const todos = await this.read();
 
@@ -63,47 +106,6 @@ class Todo {
     return this._save(filteredTodos);
   }
 
-  async clear() {
-    const todos = [];
-
-    await this._save(todos);
-
-    return 'all tasks deleted';
-  }
-
-  async readToDo(id) {
-    const todos = await this.read();
-
-    const oneTask = todos.find(t => t.id === id);
-    if (oneTask == null) {
-      const error = new Error(`ID ${id} you wrote does not exist.`);
-      error.code = 'not-found';
-      throw error;
-    } else {
-      return oneTask;
-    }
-  }
-
-  async patch(id, done, description) {
-    const todos = await this.read();
-
-    const todo = todos.find(t => t.id === id);
-    if (todo == null) {
-      const error = new Error(`To-do with ID ${id} does not exist.`);
-      error.code = 'not-found';
-      throw error;
-    }
-
-    if (done !== null) {
-      todo.done = done;
-    }
-
-    todo.description = description;
-
-    await this._save(todos);
-
-    return todo;
-  }
   // Methods starting with underscore should not be used outside of this class
   _save(todos) {
     return new Promise((resolve, reject) => {
